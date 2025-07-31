@@ -1,0 +1,15 @@
+# Production configuration
+spring:
+  profiles:
+    active: prod
+
+monitoring:
+  ssl:
+    ignore-certificate-errors: false  # SSL verification ENABLED for production security
+  check-interval: 60000  # Less frequent checks for production (60 seconds)
+
+logging:
+  level:
+    com.example.apimonitoring: INFO
+    org.springframework.web: INFO
+    root: WARN 

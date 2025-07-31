@@ -1,0 +1,42 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Run API Monitor (Dev Profile)",
+            "request": "launch",
+            "mainClass": "com.example.apimonitoring.ApiMonitoringApplication",
+            "projectName": "api-monitoring",
+            "args": "--spring.profiles.active=dev",
+            "console": "internalConsole",
+            "env": {
+                "SPRING_PROFILES_ACTIVE": "dev"
+            }
+        },
+        {
+            "type": "java",
+            "name": "Run API Monitor (Production Profile)",
+            "request": "launch",
+            "mainClass": "com.example.apimonitoring.ApiMonitoringApplication",
+            "projectName": "api-monitoring",
+            "args": "--spring.profiles.active=prod",
+            "console": "internalConsole",
+            "env": {
+                "SPRING_PROFILES_ACTIVE": "prod"
+            }
+        },
+        {
+            "type": "java",
+            "name": "Debug API Monitor (Dev Profile)",
+            "request": "launch",
+            "mainClass": "com.example.apimonitoring.ApiMonitoringApplication",
+            "projectName": "api-monitoring",
+            "args": "--spring.profiles.active=dev",
+            "console": "internalConsole",
+            "env": {
+                "SPRING_PROFILES_ACTIVE": "dev"
+            },
+            "vmArgs": "-Dspring.profiles.active=dev"
+        }
+    ]
+} 

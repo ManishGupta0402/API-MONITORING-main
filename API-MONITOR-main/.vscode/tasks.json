@@ -1,0 +1,40 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "maven-run-dev",
+            "type": "shell",
+            "command": "mvn",
+            "args": [
+                "spring-boot:run",
+                "-Dspring-boot.run.profiles=dev"
+            ],
+            "group": "build",
+            "detail": "Run Spring Boot with dev profile using Maven",
+            "problemMatcher": []
+        },
+        {
+            "label": "maven-run-prod",
+            "type": "shell",
+            "command": "mvn",
+            "args": [
+                "spring-boot:run",
+                "-Dspring-boot.run.profiles=prod"
+            ],
+            "group": "build",
+            "detail": "Run Spring Boot with prod profile using Maven",
+            "problemMatcher": []
+        },
+        {
+            "label": "maven-compile",
+            "type": "shell",
+            "command": "mvn",
+            "args": [
+                "compile"
+            ],
+            "group": "build",
+            "detail": "Compile the project",
+            "problemMatcher": []
+        }
+    ]
+} 

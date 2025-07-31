@@ -1,0 +1,13 @@
+# Development configuration for local testing
+# Note: This file is activated when --spring.profiles.active=dev is set
+
+monitoring:
+  ssl:
+    ignore-certificate-errors: true  # Disabled SSL verification for development
+  check-interval: 10000  # Faster checks for development (10 seconds)
+
+logging:
+  level:
+    com.example.apimonitoring: DEBUG
+    org.springframework.web.reactive.function.client: DEBUG
+    reactor.netty.http.client: DEBUG 

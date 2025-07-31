@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Monitoring - Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #fd7e14 0%, #e63946 100%);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .admin-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #fd7e14;
+            padding-bottom: 10px;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background-color: #fd7e14;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #e8630a;
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #fd7e14;
+            box-shadow: 0 0 0 2px rgba(253, 126, 20, 0.25);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .modal-title {
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .actions {
+                flex-direction: column;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .table {
+                font-size: 12px;
+            }
+            
+            .table th,
+            .table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛠️ API Monitoring - Admin Panel</h1>
+        <p>Manage your API endpoints and monitoring configuration</p>
+    </div>
+    
+    <div class="container">
+        <!-- Actions Section -->
+        <div class="admin-section">
+            <div class="section-title">Quick Actions</div>
+            <div class="actions">
+                <button class="btn btn-success" onclick="openAddModal()">➕ Add New API Endpoint</button>
+                <button class="btn btn-primary" onclick="refreshEndpoints()">🔄 Refresh List</button>
+                <button class="btn btn-warning" onclick="runAllHealthChecks()">🔍 Run All Health Checks</button>
+                <button class="btn btn-secondary" onclick="window.close()">← Back to Dashboard</button>
+            </div>
+        </div>
+        
+        <!-- Message Area -->
+        <div id="message-area"></div>
+        
+        <!-- API Endpoints List -->
+        <div class="admin-section">
+            <div class="section-title">API Endpoints Management</div>
+            <div style="background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 14px;">
+                <strong>🔒 Security Notice:</strong> Full URLs are displayed here for management purposes. 
+                Sensitive path information is hidden in the main dashboard for security.
+            </div>
+            <div id="endpoints-table-container">
+                <div class="loading">Loading API endpoints...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Modal -->
+    <div id="endpointModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Add New API Endpoint</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="endpointForm">
+                <input type="hidden" id="endpointId">
+                
+                <div class="form-group">
+                    <label class="form-label" for="endpointName">Endpoint Name *</label>
+                    <input type="text" class="form-control" id="endpointName" required 
+                           placeholder="e.g., JSONPlaceholder API">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="form-label" for="httpMethod">HTTP Method *</label>
+                        <select class="form-control" id="httpMethod" required>
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="PUT">PUT</option>
+                            <option value="DELETE">DELETE</option>
+                            <option value="HEAD">HEAD</option>
+                            <option value="OPTIONS">OPTIONS</option>
+                        </select>
+                    </div>
+                    <div class="form-col">
+                        <label class="form-label" for="expectedStatus">Expected Status Code</label>
+                        <input type="number" class="form-control" id="expectedStatus" value="200" 
+                               placeholder="200">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="endpointUrl">URL *</label>
+                    <input type="url" class="form-control" id="endpointUrl" required 
+                           placeholder="https://jsonplaceholder.typicode.com/posts">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="form-label" for="timeoutMs">Timeout (ms)</label>
+                        <input type="number" class="form-control" id="timeoutMs" value="5000" 
+                               placeholder="5000">
+                    </div>
+                    <div class="form-col">
+                        <label class="form-label" for="checkIntervalMs">Check Interval (ms)</label>
+                        <input type="number" class="form-control" id="checkIntervalMs" value="30000" 
+                               placeholder="30000">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="isActive" checked> Active (Enable monitoring)
+                    </label>
+                </div>
+                
+                <div class="actions">
+                    <button type="submit" class="btn btn-success">💾 Save Endpoint</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        let endpoints = [];
+        let editingEndpoint = null;
+        
+        // Initialize the admin panel
+        document.addEventListener('DOMContentLoaded', function() {
+            loadEndpoints();
+        });
+        
+        // Load all endpoints
+        async function loadEndpoints() {
+            try {
+                const response = await fetch('/api/endpoints');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch endpoints');
+                }
+                
+                endpoints = await response.json();
+                renderEndpointsTable();
+                hideMessage();
+            } catch (error) {
+                console.error('Error loading endpoints:', error);
+                showMessage('Failed to load API endpoints. Please try again.', 'error');
+            }
+        }
+        
+        // Render endpoints table
+        function renderEndpointsTable() {
+            const container = document.getElementById('endpoints-table-container');
+            
+            if (endpoints.length === 0) {
+                container.innerHTML = '<div class="loading">No API endpoints configured yet.</div>';
+                return;
+            }
+            
+            const tableHTML = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Method</th>
+                            <th>URL</th>
+                            <th>Status</th>
+                            <th>Timeout</th>
+                            <th>Interval</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${endpoints.map(endpoint => `
+                            <tr>
+                                <td><strong>${endpoint.name}</strong></td>
+                                <td><span class="status-badge">${endpoint.httpMethod}</span></td>
+                                <td><a href="${endpoint.url}" target="_blank">${endpoint.url}</a></td>
+                                <td>
+                                    <span class="status-badge ${endpoint.isActive ? 'status-active' : 'status-inactive'}">
+                                        ${endpoint.isActive ? 'Active' : 'Inactive'}
+                                    </span>
+                                </td>
+                                <td>${endpoint.timeoutMs}ms</td>
+                                <td>${endpoint.checkIntervalMs}ms</td>
+                                <td>
+                                    <button class="btn btn-warning" onclick="editEndpoint(${endpoint.id})" style="margin-right: 5px;">
+                                        ✏️ Edit
+                                    </button>
+                                    <button class="btn btn-danger" onclick="deleteEndpoint(${endpoint.id}, '${endpoint.name}')">
+                                        🗑️ Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            container.innerHTML = tableHTML;
+        }
+        
+        // Open add new endpoint modal
+        function openAddModal() {
+            editingEndpoint = null;
+            document.getElementById('modalTitle').textContent = 'Add New API Endpoint';
+            document.getElementById('endpointForm').reset();
+            document.getElementById('endpointId').value = '';
+            document.getElementById('isActive').checked = true;
+            document.getElementById('endpointModal').style.display = 'block';
+        }
+        
+        // Edit existing endpoint
+        function editEndpoint(endpointId) {
+            const endpoint = endpoints.find(e => e.id === endpointId);
+            if (!endpoint) {
+                showMessage('Endpoint not found!', 'error');
+                return;
+            }
+            
+            editingEndpoint = endpoint;
+            document.getElementById('modalTitle').textContent = 'Edit API Endpoint';
+            document.getElementById('endpointId').value = endpoint.id;
+            document.getElementById('endpointName').value = endpoint.name;
+            document.getElementById('httpMethod').value = endpoint.httpMethod;
+            document.getElementById('endpointUrl').value = endpoint.url;
+            document.getElementById('expectedStatus').value = endpoint.expectedStatus;
+            document.getElementById('timeoutMs').value = endpoint.timeoutMs;
+            document.getElementById('checkIntervalMs').value = endpoint.checkIntervalMs;
+            document.getElementById('isActive').checked = endpoint.isActive;
+            document.getElementById('endpointModal').style.display = 'block';
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('endpointModal').style.display = 'none';
+            editingEndpoint = null;
+        }
+        
+        // Handle form submission
+        document.getElementById('endpointForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('endpointName').value,
+                httpMethod: document.getElementById('httpMethod').value,
+                url: document.getElementById('endpointUrl').value,
+                expectedStatus: parseInt(document.getElementById('expectedStatus').value),
+                timeoutMs: parseInt(document.getElementById('timeoutMs').value),
+                checkIntervalMs: parseInt(document.getElementById('checkIntervalMs').value),
+                isActive: document.getElementById('isActive').checked
+            };
+            
+            try {
+                let response;
+                if (editingEndpoint) {
+                    // Update existing endpoint
+                    response = await fetch(`/api/endpoints/${editingEndpoint.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                } else {
+                    // Create new endpoint
+                    response = await fetch('/api/endpoints', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                }
+                
+                if (!response.ok) {
+                    throw new Error('Failed to save endpoint');
+                }
+                
+                closeModal();
+                await loadEndpoints();
+                showMessage(`Endpoint ${editingEndpoint ? 'updated' : 'created'} successfully!`, 'success');
+            } catch (error) {
+                console.error('Error saving endpoint:', error);
+                showMessage('Failed to save endpoint. Please try again.', 'error');
+            }
+        });
+        
+        // Delete endpoint
+        async function deleteEndpoint(endpointId, endpointName) {
+            if (!confirm(`Are you sure you want to delete "${endpointName}"?\n\nThis will also delete all associated health check data.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/endpoints/${endpointId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to delete endpoint');
+                }
+                
+                await loadEndpoints();
+                showMessage(`Endpoint "${endpointName}" deleted successfully!`, 'success');
+            } catch (error) {
+                console.error('Error deleting endpoint:', error);
+                showMessage('Failed to delete endpoint. Please try again.', 'error');
+            }
+        }
+        
+        // Refresh endpoints
+        function refreshEndpoints() {
+            loadEndpoints();
+        }
+        
+        // Run all health checks
+        async function runAllHealthChecks() {
+            try {
+                const response = await fetch('/api/monitoring/check/all', {
+                    method: 'POST'
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to run health checks');
+                }
+                
+                showMessage('Health checks initiated for all active endpoints!', 'success');
+            } catch (error) {
+                console.error('Error running health checks:', error);
+                showMessage('Failed to run health checks. Please try again.', 'error');
+            }
+        }
+        
+        // Show message
+        function showMessage(message, type) {
+            const messageArea = document.getElementById('message-area');
+            const className = type === 'error' ? 'error' : 'success';
+            messageArea.innerHTML = `<div class="${className}">${message}</div>`;
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                hideMessage();
+            }, 5000);
+        }
+        
+        // Hide message
+        function hideMessage() {
+            document.getElementById('message-area').innerHTML = '';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('endpointModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html> 
